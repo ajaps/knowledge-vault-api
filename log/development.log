@@ -1,0 +1,55 @@
+  [1m[35mSQL (1.0ms)[0m  [1m[35mSET search_path TO public /*application='KnowledgeVault'*/[0m
+  [1m[35m (948.7ms)[0m  [1m[35mCREATE DATABASE "knowledge_vault_development" ENCODING = 'unicode' /*application='KnowledgeVault'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='KnowledgeVault'*/[0m
+  [1m[35m (263.5ms)[0m  [1m[35mCREATE DATABASE "knowledge_vault_test" ENCODING = 'unicode' /*application='KnowledgeVault'*/[0m
+  [1m[35m (25.4ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='KnowledgeVault'*/[0m
+  [1m[35m (8.0ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='KnowledgeVault'*/[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT pg_try_advisory_lock(8441102398269052365) /*application='KnowledgeVault'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='KnowledgeVault'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.7ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='KnowledgeVault'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (19.2ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2025-10-07 23:31:12.428868', '2025-10-07 23:31:12.428871') RETURNING "key" /*application='KnowledgeVault'*/[0m
+Migrating to CreateUsers (20251007231549)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='KnowledgeVault'*/[0m
+  [1m[35m (38.8ms)[0m  [1m[35mCREATE TABLE "users" ("id" bigserial primary key, "email" character varying, "password_digest" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='KnowledgeVault'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.6ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20251007231549') RETURNING "version" /*application='KnowledgeVault'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='KnowledgeVault'*/[0m
+Migrating to CreateApiKeys (20251007232502)
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mBEGIN /*application='KnowledgeVault'*/[0m
+  [1m[35m (25.1ms)[0m  [1m[35mCREATE TABLE "api_keys" ("id" bigserial primary key, "token" character varying, "user_id" bigint NOT NULL, "last_seen" timestamp(6), "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_32c28d0dc2"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+) /*application='KnowledgeVault'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE INDEX "index_api_keys_on_user_id" ON "api_keys" ("user_id") /*application='KnowledgeVault'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20251007232502') RETURNING "version" /*application='KnowledgeVault'*/[0m
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT /*application='KnowledgeVault'*/[0m
+Migrating to CreateVaults (20251007232721)
+  [1m[36mTRANSACTION (9.3ms)[0m  [1m[35mBEGIN /*application='KnowledgeVault'*/[0m
+  [1m[35m (23.5ms)[0m  [1m[35mCREATE TABLE "vaults" ("id" bigserial primary key, "name" character varying, "description" text, "user_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_c702dc4987"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+) /*application='KnowledgeVault'*/[0m
+  [1m[35m (1.4ms)[0m  [1m[35mCREATE INDEX "index_vaults_on_user_id" ON "vaults" ("user_id") /*application='KnowledgeVault'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.1ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20251007232721') RETURNING "version" /*application='KnowledgeVault'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='KnowledgeVault'*/[0m
+Migrating to CreateDocuments (20251007232751)
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mBEGIN /*application='KnowledgeVault'*/[0m
+  [1m[35m (9.3ms)[0m  [1m[35mCREATE TABLE "documents" ("id" bigserial primary key, "valut_id" bigint NOT NULL, "title" character varying, "body" text, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_869d814917"
+FOREIGN KEY ("valut_id")
+  REFERENCES "valuts" ("id")
+) /*application='KnowledgeVault'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK /*application='KnowledgeVault'*/[0m
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT pg_advisory_unlock(8441102398269052365) /*application='KnowledgeVault'*/[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_try_advisory_lock(8441102398269052365) /*application='KnowledgeVault'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='KnowledgeVault'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.6ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='KnowledgeVault'*/[0m
+Migrating to CreateDocuments (20251007232751)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='KnowledgeVault'*/[0m
+  [1m[35m (24.4ms)[0m  [1m[35mCREATE TABLE "documents" ("id" bigserial primary key, "vault_id" bigint NOT NULL, "title" character varying, "body" text, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_35569ea1f2"
+FOREIGN KEY ("vault_id")
+  REFERENCES "vaults" ("id")
+) /*application='KnowledgeVault'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_documents_on_vault_id" ON "documents" ("vault_id") /*application='KnowledgeVault'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20251007232751') RETURNING "version" /*application='KnowledgeVault'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='KnowledgeVault'*/[0m
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT pg_advisory_unlock(8441102398269052365) /*application='KnowledgeVault'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='KnowledgeVault'*/[0m
