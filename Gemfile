@@ -49,3 +49,5 @@ end
 gem "bcrypt", "~> 3.1"
 gem "jwt", "~> 3.1"
 gem "pundit", "~> 2.5"
+
+gem "rspec", "~> 3.13"

@@ -1,4 +1,4 @@
-class ApiKeysController < ApplicationController
+class Api::V1::ApiKeysController < ApplicationController
 
   def index
     render json: current_user.api_keys.order(created_at: :desc).as_json(only: %i[id last_seen created-at])
