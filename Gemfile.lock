@@ -98,6 +98,11 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
+    factory_bot (6.5.5)
+      activesupport (>= 6.1.0)
+    factory_bot_rails (6.5.1)
+      factory_bot (~> 6.5)
+      railties (>= 6.1.0)
     fugit (1.11.2)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
@@ -239,10 +244,6 @@ GEM
     regexp_parser (2.11.3)
     reline (0.6.2)
       io-console (~> 0.5)
-    rspec (3.13.1)
-      rspec-core (~> 3.13.0)
-      rspec-expectations (~> 3.13.0)
-      rspec-mocks (~> 3.13.0)
     rspec-core (3.13.5)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
@@ -251,6 +252,14 @@ GEM
     rspec-mocks (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
+    rspec-rails (6.1.5)
+      actionpack (>= 6.1)
+      activesupport (>= 6.1)
+      railties (>= 6.1)
+      rspec-core (~> 3.13)
+      rspec-expectations (~> 3.13)
+      rspec-mocks (~> 3.13)
+      rspec-support (~> 3.13)
     rspec-support (3.13.6)
     rubocop (1.81.1)
       json (~> 2.3)
@@ -342,13 +351,14 @@ DEPENDENCIES
   bootsnap
   brakeman
   debug
+  factory_bot_rails (~> 6.5)
   jwt (~> 3.1)
   kamal
   pg (~> 1.1)
   puma (>= 5.0)
   pundit (~> 2.5)
   rails (~> 8.0.2)
-  rspec (~> 3.13)
+  rspec-rails (~> 6.1)
   rubocop-rails-omakase
   solid_cable
   solid_cache

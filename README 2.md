@@ -1,24 +1,28 @@
+# Knowledge Vault API
+
 # README
 
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
-Things you may want to cover:
+# Setup
+ - Run `rails db:setup`
+ - `rails s` - to start the server
 
-* Ruby version
 
-* System dependencies
+# Routes
+  - To signup - `http://127.0.0.1:3000/api/v1/signup`
+  ```{
+          "user": {
+              "email": "ajapsF@gmail.com",
+              "password": "ajaps"
+          }
+      }
+  ```
 
-* Configuration
+ - `http://127.0.0.1:3000/api/v1/login` include email and password to login
 
-* Database creation
 
-* Database initialization
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+ # Test
+  - To run tests `rspec`
