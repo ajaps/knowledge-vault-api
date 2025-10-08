@@ -1,7 +1,7 @@
 class ApiKey < ApplicationRecord
   belongs_to :user
 
-  scope :active, -> { where (active: true) }
+  # scope :active, -> { where(active: true) }
   
   def self.generate!(user)
     raw = SecureRandom.hex(32)

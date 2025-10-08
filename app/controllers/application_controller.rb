@@ -1,34 +1,66 @@
 class ApplicationController < ActionController::API
-  include Authentication
+  include ActionController::HttpAuthentication::Token::ControllerMethods
+  
+  before_action :authenticate_request!
+  
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+  rescue_from ActiveRecord::RecordInvalid, with: :unprocessable_entity
   
   private
-
-  # def current_user
-  #   @current_user ||= authenticate_with_api_key || authenticate_with_jwt
-  # end
   
-  # def require_auth!
-  #   head :unauthorized unless current_user
-  # end
+  def authenticate_request!
+    authenticate_or_request_with_http_token do |token, options|
+      # First, try to find as owner key
+      user = User.find_by(owner_api_key: token)
+      
+      if user
+        @current_user = user
+        @is_owner_key = true
+        @shared_key = nil
+      else
+        shared_key = SharedApiKey.active.find_by(key: token)
+        
+        if shared_key
+          @current_user = shared_key.user
+          @is_owner_key = false
+          @shared_key = shared_key
+          
+          shared_key.touch_last_used!
+        end
+      end
+      
+      @current_user.present?
+    end
+  end
+  
+  attr_reader :current_user
+  
+  def owner_key?
+    @is_owner_key
+  end
+  
+  def shared_key?
+    !@is_owner_key
+  end
+  
+  def require_owner_key!
+    return true if owner_key?
 
-  # def authenticate_with_api_key
-  #   raw = request.headers["X-API-Key"].strip
-  #   return if raw.blank?
-
-  #   ApiKey.find_user_by_token(raw)
-  # end
-
-  # def authenticate_with_jwt
-  #   header = request.headers["Authorization"]
-  #   token = header.split(" ")[-1]
-
-  #   return if token.blank?
-
-  #   begin
-  #     payload, = JWT.decode(token, Rails.application.credentials.secret_key_base, true, algorithm: "HS256")
-  #     User.find_by(id: payload["sub"])
-  #   rescue JWT::DecodeError
-  #     nil
-  #   end
-  # end
+    render json: { 
+      error: 'This action requires an owner API key. You are using a shared key(read-only).' 
+    }, status: :forbidden
+    false
+  end
+  
+  def not_found(exception)
+    render json: { error: exception.message }, status: :not_found
+  end
+  
+  def unprocessable_entity(exception)
+    render json: { error: exception.message }, status: :unprocessable_entity
+  end
+  
+  def forbidden
+    render json: { error: 'Forbidden' }, status: :forbidden
+  end
 end
