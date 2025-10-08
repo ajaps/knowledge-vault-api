@@ -9,6 +9,10 @@ class UsersController < ApplicationController
     }
   end
 
+  def show
+    render json: { id: current_user.id, email: current_user.email }
+  end
+
   private
   
   def user_params

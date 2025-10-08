@@ -7,7 +7,17 @@ Rails.application.routes.draw do
 
   post "/login", to: "sessions#create"
   post "/signup", to: "users#create"
-  # get "/current_user", to: "users#show"
+  get "/owner", to: "users#show"
+
+  resources :api_keys, only [:create, :index, :destroy]
+
+  resources :vaults do
+    post :share, on: :member
+    delete "share/:user_id", to: "vaults:unshare"
+    resources :docuemnts, only: [:index, :create]
+  end
+
+  resources :documents, only: [:show, :update, :destroy]
 
   # Defines the root path route ("/")
   # root "posts#index"
