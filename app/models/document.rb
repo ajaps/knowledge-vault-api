@@ -1,3 +1,4 @@
 class Document < ApplicationRecord
-  belongs_to :vault
+  has_many :vaults
+  has_many :api_keys
 end
